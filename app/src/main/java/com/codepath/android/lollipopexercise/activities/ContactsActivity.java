@@ -1,11 +1,14 @@
 package com.codepath.android.lollipopexercise.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.codepath.android.lollipopexercise.R;
 import com.codepath.android.lollipopexercise.adapters.ContactsAdapter;
@@ -62,5 +65,28 @@ public class ContactsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onAddAction(MenuItem mi) {
+        Contact newContact = Contact.getRandomContact(this);
+        contacts.add(0, newContact);
+        mAdapter.notifyDataSetChanged();
+        rvContacts.scrollToPosition(0);
+
+        // Define the click listener as a member
+        View.OnClickListener myOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contacts.remove(0);
+                mAdapter.notifyDataSetChanged();
+                rvContacts.scrollToPosition(0);
+            }
+        };
+
+
+        Snackbar.make(rvContacts, "Contact Added!", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", myOnClickListener)
+                .setActionTextColor(ContextCompat.getColor(ContactsActivity.this, R.color.accent))
+                .show();
     }
 }
